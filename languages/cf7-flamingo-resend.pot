@@ -1,0 +1,132 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CF7 Flamingo Resend 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-23 12:05+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GitHub Copilot\n"
+
+msgid "Resend"
+msgstr ""
+
+msgid "Resend the Contact Form 7 mail templates using the data saved in this Flamingo message."
+msgstr ""
+
+msgid "Resend Now"
+msgstr ""
+
+msgid "You are not allowed to resend this Flamingo message."
+msgstr ""
+
+#, php-format
+msgid "Flamingo message resent. %1$d of %2$d mail template(s) were sent."
+msgstr ""
+
+msgid "Contact Form 7 or Flamingo is not available."
+msgstr ""
+
+msgid "The selected Flamingo message could not be found."
+msgstr ""
+
+msgid "Clear the spam status before resending this message."
+msgstr ""
+
+msgid "The original Contact Form 7 form could not be resolved from this Flamingo message."
+msgstr ""
+
+msgid "The resend context could not be prepared."
+msgstr ""
+
+msgid "No mail template was available to resend."
+msgstr ""
+
+msgid "The resend was attempted, but no email could be sent."
+msgstr ""# Copyright (C) 2026 GitHub Copilot
+# This file is distributed under the same license as the CF7 Flamingo Resend plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: CF7 Flamingo Resend 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cf7-flamingo-resend\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-04-23T02:45:33+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: cf7-flamingo-resend\n"
+
+#. Plugin Name of the plugin
+#: cf7-flamingo-resend.php
+msgid "CF7 Flamingo Resend"
+msgstr ""
+
+#. Description of the plugin
+#: cf7-flamingo-resend.php
+msgid "Resend Contact Form 7 notification emails from Flamingo inbound messages after spam is cleared."
+msgstr ""
+
+#. Author of the plugin
+#: cf7-flamingo-resend.php
+msgid "GitHub Copilot"
+msgstr ""
+
+#: cf7-flamingo-resend.php:48
+#: cf7-flamingo-resend.php:82
+#: cf7-flamingo-resend.php:87
+#: cf7-flamingo-resend.php:108
+msgid "Resend"
+msgstr ""
+
+#: cf7-flamingo-resend.php:66
+msgid "Resend the Contact Form 7 mail templates using the data saved in this Flamingo message."
+msgstr ""
+
+#: cf7-flamingo-resend.php:70
+msgid "Resend Now"
+msgstr ""
+
+#: cf7-flamingo-resend.php:132
+msgid "You are not allowed to resend this Flamingo message."
+msgstr ""
+
+#. translators: 1: sent mail count, 2: total mail template count.
+#: cf7-flamingo-resend.php:414
+#, php-format
+msgid "Flamingo message resent. %1$d of %2$d mail template(s) were sent."
+msgstr ""
+
+#: cf7-flamingo-resend.php:421
+msgid "Contact Form 7 or Flamingo is not available."
+msgstr ""
+
+#: cf7-flamingo-resend.php:424
+msgid "The selected Flamingo message could not be found."
+msgstr ""
+
+#: cf7-flamingo-resend.php:427
+msgid "Clear the spam status before resending this message."
+msgstr ""
+
+#: cf7-flamingo-resend.php:430
+msgid "The original Contact Form 7 form could not be resolved from this Flamingo message."
+msgstr ""
+
+#: cf7-flamingo-resend.php:433
+msgid "The resend context could not be prepared."
+msgstr ""
+
+#: cf7-flamingo-resend.php:436
+msgid "No mail template was available to resend."
+msgstr ""
+
+#: cf7-flamingo-resend.php:439
+msgid "The resend was attempted, but no email could be sent."
+msgstr ""

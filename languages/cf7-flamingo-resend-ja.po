@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CF7 Flamingo Resend 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-23 12:05+0000\n"
+"PO-Revision-Date: 2026-04-23 12:05+0000\n"
+"Last-Translator: GitHub Copilot\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GitHub Copilot\n"
+
+msgid "Resend"
+msgstr "再送"
+
+msgid "Resend the Contact Form 7 mail templates using the data saved in this Flamingo message."
+msgstr "この Flamingo メッセージに保存されたデータを使って、Contact Form 7 のメールテンプレートを再送します。"
+
+msgid "Resend Now"
+msgstr "今すぐ再送"
+
+msgid "You are not allowed to resend this Flamingo message."
+msgstr "この Flamingo メッセージを再送する権限がありません。"
+
+#, php-format
+msgid "Flamingo message resent. %1$d of %2$d mail template(s) were sent."
+msgstr "Flamingo メッセージを再送しました。%2$d 件中 %1$d 件のメールテンプレートを送信しました。"
+
+msgid "Contact Form 7 or Flamingo is not available."
+msgstr "Contact Form 7 または Flamingo が利用できません。"
+
+msgid "The selected Flamingo message could not be found."
+msgstr "選択した Flamingo メッセージが見つかりませんでした。"
+
+msgid "Clear the spam status before resending this message."
+msgstr "このメッセージを再送する前に、スパム状態を解除してください。"
+
+msgid "The original Contact Form 7 form could not be resolved from this Flamingo message."
+msgstr "この Flamingo メッセージから元の Contact Form 7 フォームを特定できませんでした。"
+
+msgid "The resend context could not be prepared."
+msgstr "再送に必要なコンテキストを準備できませんでした。"
+
+msgid "No mail template was available to resend."
+msgstr "再送できるメールテンプレートがありませんでした。"
+
+msgid "The resend was attempted, but no email could be sent."
+msgstr "再送を試みましたが、メールを送信できませんでした。"# Copyright (C) 2026 GitHub Copilot
+# This file is distributed under the same license as the CF7 Flamingo Resend plugin.
