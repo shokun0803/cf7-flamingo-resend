@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CF7 Flamingo Resend
  * Description: Resend Contact Form 7 notification emails from Flamingo inbound messages after spam is cleared.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Author: GitHub Copilot, shokun0803
  * Text Domain: cf7-flamingo-resend
  * Domain Path: /languages
