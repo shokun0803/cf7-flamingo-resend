@@ -15,12 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class CF7_Flamingo_Resend {
 	const ACTION = 'cf7fr_resend_flamingo_message';
 	const NONCE_ACTION = 'cf7fr_resend_message';
+	private static $active_resend_context = null;
 
 	public static function init() {
 		add_action( 'plugins_loaded', array( __CLASS__, 'load_textdomain' ) );
 		add_action( 'admin_post_' . self::ACTION, array( __CLASS__, 'handle_resend_request' ) );
 		add_action( 'load-flamingo_page_flamingo_inbound', array( __CLASS__, 'register_edit_meta_box' ) );
 		add_filter( 'manage_flamingo_inbound_posts_columns', array( __CLASS__, 'add_resend_column' ) );
+		add_filter( 'wpcf7_special_mail_tags', array( __CLASS__, 'filter_special_mail_tags' ), 10, 4 );
 		add_action( 'manage_flamingo_inbound_posts_custom_column', array( __CLASS__, 'render_resend_column' ), 10, 2 );
 		add_action( 'admin_notices', array( __CLASS__, 'render_admin_notice' ) );
 	}
@@ -180,8 +182,16 @@ final class CF7_Flamingo_Resend {
 		$previous_contact_form = function_exists( 'wpcf7_get_current_contact_form' )
 			? wpcf7_get_current_contact_form()
 			: null;
+		$previous_resend_context = self::$active_resend_context;
+		$previous_post_data = isset( $_POST ) && is_array( $_POST ) ? $_POST : array();
+		$raw_post_data = self::build_raw_post_data( $contact_form, self::get_submission_posted_data( $submission ) );
 
 		self::set_submission_instance( $submission );
+		self::$active_resend_context = array(
+			'contact_form' => $contact_form,
+			'posted_data' => self::get_submission_posted_data( $submission ),
+		);
+		$_POST = $raw_post_data;
 		wpcf7_contact_form( $contact_form );
 
 		$templates = array(
@@ -205,6 +215,8 @@ final class CF7_Flamingo_Resend {
 			}
 		} finally {
 			self::set_submission_instance( $previous_submission );
+			self::$active_resend_context = $previous_resend_context;
+			$_POST = $previous_post_data;
 
 			if ( $previous_contact_form ) {
 				wpcf7_contact_form( $previous_contact_form );
@@ -299,6 +311,36 @@ final class CF7_Flamingo_Resend {
 		}
 
 		return 'mail_sent';
+	}
+
+	public static function filter_special_mail_tags( $output, $name, $html, $mail_tag ) {
+		unset( $html, $mail_tag );
+
+		if ( 0 !== strpos( (string) $name, '_raw_' ) ) {
+			return $output;
+		}
+
+		if ( empty( self::$active_resend_context['contact_form'] ) ) {
+			return $output;
+		}
+
+		$field_name = substr( (string) $name, 5 );
+
+		if ( '' === $field_name ) {
+			return $output;
+		}
+
+		$raw_value = self::resolve_raw_mail_tag_value(
+			self::$active_resend_context['contact_form'],
+			$field_name,
+			self::$active_resend_context['posted_data'] ?? array()
+		);
+
+		if ( null === $raw_value ) {
+			return $output;
+		}
+
+		return $raw_value;
 	}
 
 	private static function extract_hash( $message ) {
@@ -469,6 +511,115 @@ final class CF7_Flamingo_Resend {
 		}
 
 		return WPCF7_Submission::get_instance();
+	}
+
+	private static function get_submission_posted_data( $submission ) {
+		if ( ! is_object( $submission ) || ! method_exists( $submission, 'get_posted_data' ) ) {
+			return array();
+		}
+
+		$posted_data = $submission->get_posted_data();
+
+		return is_array( $posted_data ) ? $posted_data : array();
+	}
+
+	private static function build_raw_post_data( $contact_form, $posted_data ) {
+		if ( ! is_object( $contact_form ) || ! method_exists( $contact_form, 'scan_form_tags' ) ) {
+			return is_array( $posted_data ) ? $posted_data : array();
+		}
+
+		$raw_post_data = array();
+		$form_tags = $contact_form->scan_form_tags();
+
+		foreach ( (array) $posted_data as $field_name => $field_value ) {
+			$raw_value = self::resolve_raw_mail_tag_value( $contact_form, (string) $field_name, $posted_data );
+
+			if ( null === $raw_value ) {
+				$raw_post_data[ $field_name ] = $field_value;
+				continue;
+			}
+
+			foreach ( $form_tags as $form_tag ) {
+				if ( empty( $form_tag->name ) || $field_name !== $form_tag->name ) {
+					continue;
+				}
+
+				$raw_post_data[ $field_name ] = is_array( $field_value )
+					? self::resolve_raw_post_values( $form_tag->pipes ?? null, $field_value )
+					: $raw_value;
+				continue 2;
+			}
+
+			$raw_post_data[ $field_name ] = $raw_value;
+		}
+
+		return $raw_post_data;
+	}
+
+	private static function resolve_raw_mail_tag_value( $contact_form, $field_name, $posted_data ) {
+		if ( ! is_object( $contact_form ) || ! method_exists( $contact_form, 'scan_form_tags' ) ) {
+			return null;
+		}
+
+		if ( ! is_array( $posted_data ) || ! array_key_exists( $field_name, $posted_data ) ) {
+			return null;
+		}
+
+		$posted_values = is_array( $posted_data[ $field_name ] )
+			? $posted_data[ $field_name ]
+			: array( $posted_data[ $field_name ] );
+		$form_tags = $contact_form->scan_form_tags();
+		$resolved_values = array();
+
+		foreach ( $posted_values as $posted_value ) {
+			$resolved_value = (string) $posted_value;
+
+			foreach ( $form_tags as $form_tag ) {
+				if ( empty( $form_tag->name ) || $field_name !== $form_tag->name ) {
+					continue;
+				}
+
+				$resolved_pipe = self::resolve_pipe_label( $form_tag->pipes ?? null, $resolved_value );
+
+				if ( null !== $resolved_pipe ) {
+					$resolved_value = $resolved_pipe;
+					break;
+				}
+			}
+
+			$resolved_values[] = $resolved_value;
+		}
+
+		return implode( ', ', $resolved_values );
+	}
+
+	private static function resolve_pipe_label( $pipes, $submitted_value ) {
+		if ( ! is_object( $pipes ) || ! method_exists( $pipes, 'to_array' ) ) {
+			return null;
+		}
+
+		foreach ( $pipes->to_array() as $pipe ) {
+			if ( ! is_array( $pipe ) || 2 > count( $pipe ) ) {
+				continue;
+			}
+
+			if ( (string) $pipe[1] === (string) $submitted_value ) {
+				return (string) $pipe[0];
+			}
+		}
+
+		return null;
+	}
+
+	private static function resolve_raw_post_values( $pipes, $submitted_values ) {
+		$submitted_values = is_array( $submitted_values ) ? $submitted_values : array( $submitted_values );
+		$resolved_values = array();
+
+		foreach ( $submitted_values as $submitted_value ) {
+			$resolved_values[] = self::resolve_pipe_label( $pipes, $submitted_value ) ?? $submitted_value;
+		}
+
+		return $resolved_values;
 	}
 
 	private static function set_submission_instance( $submission ) {
